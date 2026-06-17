@@ -145,7 +145,6 @@ impl Fragment {
         message_ts: i64,
         fragment: String,
     ) -> Self {
-        // todo!("step 2: construct a Fragment with status = Queued")
         Fragment {
             id,
             message_type,
