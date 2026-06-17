@@ -70,7 +70,20 @@ impl FragmentType {
     ///   Series => "series", Sport => "sport", Taxonomy => "taxonomy",
     ///   Title => "title".
     pub fn type_str(&self) -> &'static str {
-        todo!("step 1: match self and return the type string")
+        match self {
+            FragmentType::Character => "character",
+            FragmentType::CreditContentMakers => "creditcontentmarkers",
+            FragmentType::Credit => "credit",
+            FragmentType::Movie => "movie",
+            FragmentType::Person => "person",
+            FragmentType::Programme => "programme",
+            FragmentType::Rights => "rights",
+            FragmentType::Season => "season",
+            FragmentType::Series => "series",
+            FragmentType::Sport => "sport",
+            FragmentType::Taxonomy => "taxonomy",
+            FragmentType::Title => "title"
+        }
     }
 
     /// Java/Spring: `getTableName()` — the DB table backing this fragment type.
@@ -85,7 +98,20 @@ impl FragmentType {
     ///   Series => "series_fragments", Sport => "sport_fragments",
     ///   Taxonomy => "taxonomy_fragments", Title => "title_fragments".
     pub fn table_name(&self) -> &'static str {
-        todo!("step 1: match self and return the table name")
+        match self {
+            FragmentType::Character => "character_fragments",
+            FragmentType::CreditContentMakers => "credit_content_markers_fragments",
+            FragmentType::Credit => "credit_fragments",
+            FragmentType::Movie => "movie_fragments",
+            FragmentType::Person => "person_fragments",
+            FragmentType::Programme => "programme_fragments",
+            FragmentType::Rights => "rights_fragments",
+            FragmentType::Season => "season_fragments",
+            FragmentType::Series => "series_fragments",
+            FragmentType::Sport => "sport_fragments",
+            FragmentType::Taxonomy => "taxonomy_fragments",
+            FragmentType::Title => "title_fragments"
+        }
     }
 }
 
@@ -119,7 +145,15 @@ impl Fragment {
         message_ts: i64,
         fragment: String,
     ) -> Self {
-        todo!("step 2: construct a Fragment with status = Queued")
+        // todo!("step 2: construct a Fragment with status = Queued")
+        Fragment {
+            id,
+            message_type,
+            fragment_type,
+            message_ts,
+            fragment,
+            status: FragmentStatus::Queued,
+        }
     }
 }
 

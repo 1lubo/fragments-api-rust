@@ -9,7 +9,7 @@
 //!   * `State(state)`          ≈ the injected `@Autowired` repository bean
 //!   * `Path(id)`              ≈ `@PathVariable String id`
 //!   * `Json(body)`            ≈ `@RequestBody CreateFragment body`
-//! And the return type is the `ResponseEntity`.
+//!     And the return type is the `ResponseEntity`.
 
 use axum::extract::{Path, State};
 use axum::http::StatusCode;
@@ -24,7 +24,7 @@ use crate::state::SharedState;
 ///
 /// TODO(step 5): return `StatusCode::OK`.
 pub async fn health() -> StatusCode {
-    todo!("step 5: return 200 OK")
+    StatusCode::OK
 }
 
 /// Java/Spring: `@GetMapping("/fragments")` returning `List<Fragment>`.
@@ -32,7 +32,8 @@ pub async fn health() -> StatusCode {
 /// TODO(step 5): lock the state, call `list()`, return `Json(Vec<Fragment>)`.
 /// Hint: `state.lock().unwrap()` gives you the repository.
 pub async fn list_fragments(State(state): State<SharedState>) -> Json<Vec<Fragment>> {
-    todo!("step 5: return Json of all fragments")
+   let fragments = state.lock().unwrap().list();
+    Json(fragments)
 }
 
 /// Java/Spring: `@GetMapping("/fragments/{id}")`. 404 when missing.
@@ -43,7 +44,11 @@ pub async fn get_fragment(
     State(state): State<SharedState>,
     Path(id): Path<String>,
 ) -> Result<Json<Fragment>, AppError> {
-    todo!("step 6: return the fragment or AppError::NotFound")
+    let fragment = state.lock().unwrap().get(&id);
+    match fragment {
+        Some(f) => Ok(Json(f)),
+        None => Err(AppError::NotFound(id)),
+    }
 }
 
 /// Java/Spring: `@PostMapping("/fragments")` returning `201 Created`.
@@ -54,7 +59,15 @@ pub async fn create_fragment(
     State(state): State<SharedState>,
     Json(body): Json<CreateFragment>,
 ) -> Result<(StatusCode, Json<Fragment>), AppError> {
-    todo!("step 6: create + insert fragment, return 201 with the fragment")
+    let fragment = Fragment::new(
+        body.id,
+        body.message_type,
+        body.fragment_type,
+        body.message_ts,
+        body.fragment,
+    );
+    state.lock().unwrap().insert(fragment.clone());
+    Ok((StatusCode::CREATED, Json(fragment)))
 }
 
 /// Java/Spring: `@DeleteMapping("/fragments/{id}")` → 204, or 404 if absent.
@@ -65,7 +78,12 @@ pub async fn delete_fragment(
     State(state): State<SharedState>,
     Path(id): Path<String>,
 ) -> Result<StatusCode, AppError> {
-    todo!("step 6: delete fragment, 204 on success else NotFound")
+    let deleted = state.lock().unwrap().delete(&id);
+    if deleted {
+        Ok(StatusCode::NO_CONTENT)
+    } else {
+        Err(AppError::NotFound(id))
+    }
 }
 
 /// Java/Spring: the route table — equivalent to all the `@RequestMapping`
@@ -82,5 +100,9 @@ pub async fn delete_fragment(
 /// Hint: `Router::new().route("/healthz", get(health))` ... then
 /// `.route("/fragments", get(list_fragments).post(create_fragment))`, etc.
 pub fn build_router(state: SharedState) -> Router {
-    todo!("step 5: construct the Router and attach state")
+    Router::new()
+        .route("/healthz", get(health))
+        .route("/fragments", get(list_fragments).post(create_fragment))
+        .route("/fragments/{id}", get(get_fragment).delete(delete_fragment))
+        .with_state(state)
 }

@@ -35,6 +35,9 @@ impl IntoResponse for AppError {
     /// `(status, Json(json!({ "error": message }))).into_response()`.
     /// Hint: `self.to_string()` gives you the `#[error("...")]` message.
     fn into_response(self) -> Response {
-        todo!("step 6: map AppError variants to (StatusCode, Json body)")
+        match self {
+            AppError::NotFound(_) => (StatusCode::NOT_FOUND, Json(json!({ "error": self.to_string() }))).into_response(),
+            AppError::BadRequest(_) => (StatusCode::BAD_REQUEST, Json(json!({ "error": self.to_string() }))).into_response(),
+        }
     }
 }

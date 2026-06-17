@@ -5,9 +5,9 @@
 //!
 //! Rust has no container doing that for you, so you make sharing explicit:
 //!   * `Arc<T>`  = atomically reference-counted pointer → lets many handlers
-//!                 (threads/tasks) share ownership of one repository.
+//!     (threads/tasks) share ownership of one repository.
 //!   * `Mutex<T>` = guards mutation so two requests can't corrupt the map at
-//!                 once (Spring relies on the DB / thread-safety for this).
+//!     once (Spring relies on the DB / thread-safety for this).
 //!
 //! Together, `Arc<Mutex<FragmentRepository>>` ≈ "one shared, thread-safe
 //! repository bean".
@@ -25,5 +25,5 @@ pub type SharedState = Arc<Mutex<FragmentRepository>>;
 ///
 /// TODO(step 4): create a `FragmentRepository` and wrap it in `Arc::new(Mutex::new(...))`.
 pub fn new_shared_state() -> SharedState {
-    todo!("step 4: build Arc<Mutex<FragmentRepository>>")
+    Arc::new(Mutex::new(FragmentRepository::new()))
 }

@@ -25,5 +25,9 @@ async fn main() {
     //        axum::serve(listener, app).await.unwrap();
     // Add a `tracing::info!` line announcing the bound address, Spring-style.
     let _ = (new_shared_state, build_router);
-    todo!("step 7: build state + router, bind 0.0.0.0:8080, and axum::serve")
+    let state = new_shared_state();
+    let app = build_router(state);
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await.unwrap();
+    tracing::info!("Listening on {}", listener.local_addr().unwrap());
+    axum::serve(listener, app).await.unwrap();
 }
