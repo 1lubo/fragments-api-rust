@@ -28,8 +28,10 @@ impl FragmentRepository {
     ///
     /// Note ownership: `fragment` is taken *by value* — the repository now owns
     /// it. TODO(step 3): insert the fragment into the map keyed by its `id`.
+    ///
+    /// Java to port: `fragments.put(fragment.getId(), fragment);`
     pub fn insert(&mut self, fragment: Fragment) {
-        self.fragments.insert(fragment.id.clone(), fragment);
+        todo!("step 3: insert fragment into the map keyed by fragment.id")
     }
 
     /// Java/Spring: `findById(id)` returning `Optional<Fragment>`. Rust uses
@@ -37,35 +39,77 @@ impl FragmentRepository {
     /// simple (no lifetimes/borrowing puzzles for the caller).
     ///
     /// TODO(step 3): look up `id` and return `Some(clone)` or `None`.
+    ///
+    /// Java to port: `return Optional.ofNullable(fragments.get(id));`
     pub fn get(&self, id: &str) -> Option<Fragment> {
-        self.fragments.get(id).cloned().or(None)
+        todo!("step 3: get a clone of the fragment with this id, or None")
     }
 
     /// Java/Spring: `findAll()`. Order is unspecified (it's a HashMap).
     ///
     /// TODO(step 3): return all fragments as a `Vec<Fragment>` (clones).
+    ///
+    /// Java to port: `return new ArrayList<>(fragments.values());`
     pub fn list(&self) -> Vec<Fragment> {
-        self.fragments.values().cloned().collect()
+        todo!("step 3: collect all fragments into a Vec")
     }
 
     /// Java/Spring: `deleteById(id)`. Returns `true` if something was removed.
     ///
     /// TODO(step 3): remove `id` from the map; return whether it existed.
+    ///
+    /// Java to port: `return fragments.remove(id) != null;`
     pub fn delete(&mut self, id: &str) -> bool {
-        self.fragments.remove(id).is_some()
+        todo!("step 3: remove fragment by id, return true if it existed")
     }
 
     /// Java/Spring: `count()`.
     ///
     /// TODO(step 3): return the number of stored fragments.
+    ///
+    /// Java to port: `return fragments.size();`
     pub fn len(&self) -> usize {
-        self.fragments.len()
+        todo!("step 3: return the number of fragments")
     }
 
     /// Convenience used by tests and handlers.
     ///
     /// TODO(step 3): return `true` when there are no fragments.
+    ///
+    /// Java to port: `return fragments.isEmpty();`
     pub fn is_empty(&self) -> bool {
-        self.fragments.is_empty()
+        todo!("step 3: return true when empty")
+    }
+}
+
+/// Java/Spring: the persistence *interface* the rest of the app codes against —
+/// the seam, like a Spring Data repository interface. Milestone A's only impl is
+/// the in-memory `FragmentRepository`; Milestone C adds a `sqlx`/Postgres impl
+/// behind this same trait, so the consumer/worker never changes.
+///
+/// The methods mirror the inherent ones above; this impl just forwards to them
+/// (Rust resolves the calls to the inherent methods, so there's no recursion).
+pub trait FragmentStore {
+    fn insert(&mut self, fragment: Fragment);
+    fn get(&self, id: &str) -> Option<Fragment>;
+    fn list(&self) -> Vec<Fragment>;
+    fn delete(&mut self, id: &str) -> bool;
+}
+
+impl FragmentStore for FragmentRepository {
+    fn insert(&mut self, fragment: Fragment) {
+        FragmentRepository::insert(self, fragment);
+    }
+
+    fn get(&self, id: &str) -> Option<Fragment> {
+        FragmentRepository::get(self, id)
+    }
+
+    fn list(&self) -> Vec<Fragment> {
+        FragmentRepository::list(self)
+    }
+
+    fn delete(&mut self, id: &str) -> bool {
+        FragmentRepository::delete(self, id)
     }
 }

@@ -23,67 +23,90 @@ use crate::state::SharedState;
 /// Java/Spring: `GET /healthz` — a liveness probe. No body, just `200 OK`.
 ///
 /// TODO(step 5): return `StatusCode::OK`.
+///
+/// Java to port:
+/// ```java
+/// @GetMapping("/healthz")
+/// ResponseEntity<Void> health() { return ResponseEntity.ok().build(); }
+/// ```
 pub async fn health() -> StatusCode {
-    StatusCode::OK
+    todo!("step 5: return 200 OK")
 }
 
 /// Java/Spring: `@GetMapping("/fragments")` returning `List<Fragment>`.
 ///
 /// TODO(step 5): lock the state, call `list()`, return `Json(Vec<Fragment>)`.
 /// Hint: `state.lock().unwrap()` gives you the repository.
+///
+/// Java to port:
+/// ```java
+/// @GetMapping("/fragments")
+/// List<Fragment> list() { return repository.findAll(); }
+/// ```
 pub async fn list_fragments(State(state): State<SharedState>) -> Json<Vec<Fragment>> {
-   let fragments = state.lock().unwrap().list();
-    Json(fragments)
+    todo!("step 5: return Json of all fragments")
 }
 
 /// Java/Spring: `@GetMapping("/fragments/{id}")`. 404 when missing.
 ///
 /// TODO(step 6): look up `id`; return `Ok(Json(fragment))` or
 /// `Err(AppError::NotFound(id))`.
+///
+/// Java to port:
+/// ```java
+/// @GetMapping("/fragments/{id}")
+/// Fragment get(@PathVariable String id) {
+///     return repository.findById(id)
+///         .orElseThrow(() -> new ResourceNotFoundException(id));
+/// }
+/// ```
 pub async fn get_fragment(
     State(state): State<SharedState>,
     Path(id): Path<String>,
 ) -> Result<Json<Fragment>, AppError> {
-    let fragment = state.lock().unwrap().get(&id);
-    match fragment {
-        Some(f) => Ok(Json(f)),
-        None => Err(AppError::NotFound(id)),
-    }
+    todo!("step 6: return the fragment or AppError::NotFound")
 }
 
 /// Java/Spring: `@PostMapping("/fragments")` returning `201 Created`.
 ///
 /// TODO(step 6): build a `Fragment` from `body` via `Fragment::new(...)`,
 /// insert it, and return `(StatusCode::CREATED, Json(fragment))`.
+///
+/// Java to port:
+/// ```java
+/// @PostMapping("/fragments")
+/// ResponseEntity<Fragment> create(@RequestBody CreateFragment body) {
+///     Fragment f = Fragment.of(body.getId(), body.getMessageType(),
+///                              body.getFragmentType(), body.getMessageTs(), body.getPayload());
+///     repository.save(f);
+///     return ResponseEntity.status(HttpStatus.CREATED).body(f);
+/// }
+/// ```
 pub async fn create_fragment(
     State(state): State<SharedState>,
     Json(body): Json<CreateFragment>,
 ) -> Result<(StatusCode, Json<Fragment>), AppError> {
-    let fragment = Fragment::new(
-        body.id,
-        body.message_type,
-        body.fragment_type,
-        body.message_ts,
-        body.fragment,
-    );
-    state.lock().unwrap().insert(fragment.clone());
-    Ok((StatusCode::CREATED, Json(fragment)))
+    todo!("step 6: create + insert fragment, return 201 with the fragment")
 }
 
 /// Java/Spring: `@DeleteMapping("/fragments/{id}")` → 204, or 404 if absent.
 ///
 /// TODO(step 6): delete by `id`; return `StatusCode::NO_CONTENT` on success or
 /// `AppError::NotFound(id)` otherwise.
+///
+/// Java to port:
+/// ```java
+/// @DeleteMapping("/fragments/{id}")
+/// ResponseEntity<Void> delete(@PathVariable String id) {
+///     if (!repository.deleteById(id)) throw new ResourceNotFoundException(id);
+///     return ResponseEntity.noContent().build();
+/// }
+/// ```
 pub async fn delete_fragment(
     State(state): State<SharedState>,
     Path(id): Path<String>,
 ) -> Result<StatusCode, AppError> {
-    let deleted = state.lock().unwrap().delete(&id);
-    if deleted {
-        Ok(StatusCode::NO_CONTENT)
-    } else {
-        Err(AppError::NotFound(id))
-    }
+    todo!("step 6: delete fragment, 204 on success else NotFound")
 }
 
 /// Java/Spring: the route table — equivalent to all the `@RequestMapping`
@@ -99,10 +122,15 @@ pub async fn delete_fragment(
 ///
 /// Hint: `Router::new().route("/healthz", get(health))` ... then
 /// `.route("/fragments", get(list_fragments).post(create_fragment))`, etc.
+///
+/// Java to port (≈ the annotations Spring scans to register routes):
+/// ```java
+/// // GET    /healthz         -> health()
+/// // GET    /fragments       -> list()
+/// // GET    /fragments/{id}  -> get(id)
+/// // POST   /fragments       -> create(body)
+/// // DELETE /fragments/{id}  -> delete(id)
+/// ```
 pub fn build_router(state: SharedState) -> Router {
-    Router::new()
-        .route("/healthz", get(health))
-        .route("/fragments", get(list_fragments).post(create_fragment))
-        .route("/fragments/{id}", get(get_fragment).delete(delete_fragment))
-        .with_state(state)
+    todo!("step 5: construct the Router and attach state")
 }

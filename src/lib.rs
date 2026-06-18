@@ -6,7 +6,10 @@
 //! items exposed through the library crate.
 
 pub mod api;
+pub mod dispatcher;
 pub mod error;
+pub mod message;
 pub mod model;
 pub mod repository;
 pub mod state;
+pub mod worker;

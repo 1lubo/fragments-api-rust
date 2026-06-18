@@ -58,6 +58,7 @@ fn enums_serialize_to_java_constant_names() {
 
 // ---- Step 2: Fragment::new constructor ------------------------------------
 
+#[ignore = "step 2: delete this line to start this step"]
 #[test]
 fn fragment_new_defaults_to_queued() {
     let f = Fragment::new(
@@ -76,6 +77,7 @@ fn fragment_new_defaults_to_queued() {
     assert_eq!(f.status, FragmentStatus::Queued);
 }
 
+#[ignore = "step 2: delete this line to start this step"]
 #[test]
 fn fragment_json_round_trips() {
     let f = Fragment::new(

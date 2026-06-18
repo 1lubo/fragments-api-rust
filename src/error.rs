@@ -34,10 +34,19 @@ impl IntoResponse for AppError {
     /// TODO(step 6): map each variant to its `StatusCode`, then return
     /// `(status, Json(json!({ "error": message }))).into_response()`.
     /// Hint: `self.to_string()` gives you the `#[error("...")]` message.
+    ///
+    /// Java to port (≈ a `@ControllerAdvice` `@ExceptionHandler`):
+    /// ```java
+    /// @ExceptionHandler(AppException.class)
+    /// ResponseEntity<Map<String, String>> handle(AppException ex) {
+    ///     HttpStatus status = switch (ex.kind()) {
+    ///         case NOT_FOUND   -> HttpStatus.NOT_FOUND;
+    ///         case BAD_REQUEST -> HttpStatus.BAD_REQUEST;
+    ///     };
+    ///     return ResponseEntity.status(status).body(Map.of("error", ex.getMessage()));
+    /// }
+    /// ```
     fn into_response(self) -> Response {
-        match self {
-            AppError::NotFound(_) => (StatusCode::NOT_FOUND, Json(json!({ "error": self.to_string() }))).into_response(),
-            AppError::BadRequest(_) => (StatusCode::BAD_REQUEST, Json(json!({ "error": self.to_string() }))).into_response(),
-        }
+        todo!("step 6: map AppError variants to (StatusCode, Json body)")
     }
 }

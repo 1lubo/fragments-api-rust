@@ -31,6 +31,7 @@ const CREATE_BODY: &str = r#"{
     "fragment": "payload"
 }"#;
 
+#[ignore = "step 5: delete this line to start this step"]
 #[tokio::test]
 async fn healthz_returns_200() {
     let resp = app()
@@ -41,6 +42,7 @@ async fn healthz_returns_200() {
     assert_eq!(resp.status(), StatusCode::OK);
 }
 
+#[ignore = "step 5: delete this line to start this step"]
 #[tokio::test]
 async fn list_is_empty_initially() {
     let resp = app()
@@ -52,6 +54,7 @@ async fn list_is_empty_initially() {
     assert_eq!(body_string(resp).await, "[]");
 }
 
+#[ignore = "step 6: delete this line to start this step"]
 #[tokio::test]
 async fn get_missing_fragment_returns_404() {
     let resp = app()
@@ -62,6 +65,7 @@ async fn get_missing_fragment_returns_404() {
     assert_eq!(resp.status(), StatusCode::NOT_FOUND);
 }
 
+#[ignore = "step 6: delete this line to start this step"]
 #[tokio::test]
 async fn create_returns_201_and_persists() {
     // Share one router (one state) across multiple requests.
@@ -101,6 +105,7 @@ async fn create_returns_201_and_persists() {
     assert_eq!(list.len(), 1);
 }
 
+#[ignore = "step 6: delete this line to start this step"]
 #[tokio::test]
 async fn delete_existing_returns_204_then_404() {
     let app = app();

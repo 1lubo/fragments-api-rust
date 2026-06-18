@@ -23,6 +23,7 @@ fn sample(id: &str) -> Fragment {
 
 // ---- Step 3: repository CRUD ----------------------------------------------
 
+#[ignore = "step 3: delete this line to start this step"]
 #[test]
 fn new_repository_is_empty() {
     let repo = FragmentRepository::new();
@@ -31,6 +32,7 @@ fn new_repository_is_empty() {
     assert!(repo.list().is_empty());
 }
 
+#[ignore = "step 3: delete this line to start this step"]
 #[test]
 fn insert_then_get_returns_fragment() {
     let mut repo = FragmentRepository::new();
@@ -42,6 +44,7 @@ fn insert_then_get_returns_fragment() {
     assert_eq!(repo.get("missing"), None);
 }
 
+#[ignore = "step 3: delete this line to start this step"]
 #[test]
 fn insert_same_id_overwrites() {
     let mut repo = FragmentRepository::new();
@@ -55,6 +58,7 @@ fn insert_same_id_overwrites() {
     assert_eq!(repo.get("a"), Some(updated));
 }
 
+#[ignore = "step 3: delete this line to start this step"]
 #[test]
 fn list_returns_all_inserted() {
     let mut repo = FragmentRepository::new();
@@ -66,6 +70,7 @@ fn list_returns_all_inserted() {
     assert_eq!(ids, vec!["a".to_string(), "b".to_string()]);
 }
 
+#[ignore = "step 3: delete this line to start this step"]
 #[test]
 fn delete_removes_and_reports_existence() {
     let mut repo = FragmentRepository::new();
@@ -78,6 +83,7 @@ fn delete_removes_and_reports_existence() {
 
 // ---- Step 4: shared state -------------------------------------------------
 
+#[ignore = "step 4: delete this line to start this step"]
 #[test]
 fn shared_state_is_shared_across_threads() {
     let state = new_shared_state();

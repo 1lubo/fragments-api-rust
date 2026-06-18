@@ -69,21 +69,10 @@ impl FragmentType {
     ///   Programme => "programme", Rights => "rights", Season => "season",
     ///   Series => "series", Sport => "sport", Taxonomy => "taxonomy",
     ///   Title => "title".
+    ///
+    /// Java to port: `String getType() { return this.type; }`
     pub fn type_str(&self) -> &'static str {
-        match self {
-            FragmentType::Character => "character",
-            FragmentType::CreditContentMakers => "creditcontentmarkers",
-            FragmentType::Credit => "credit",
-            FragmentType::Movie => "movie",
-            FragmentType::Person => "person",
-            FragmentType::Programme => "programme",
-            FragmentType::Rights => "rights",
-            FragmentType::Season => "season",
-            FragmentType::Series => "series",
-            FragmentType::Sport => "sport",
-            FragmentType::Taxonomy => "taxonomy",
-            FragmentType::Title => "title"
-        }
+        todo!("step 1: match self and return the type string")
     }
 
     /// Java/Spring: `getTableName()` — the DB table backing this fragment type.
@@ -97,21 +86,10 @@ impl FragmentType {
     ///   Rights => "rights_fragments", Season => "season_fragments",
     ///   Series => "series_fragments", Sport => "sport_fragments",
     ///   Taxonomy => "taxonomy_fragments", Title => "title_fragments".
+    ///
+    /// Java to port: `String getTableName() { return this.tableName; }`
     pub fn table_name(&self) -> &'static str {
-        match self {
-            FragmentType::Character => "character_fragments",
-            FragmentType::CreditContentMakers => "credit_content_markers_fragments",
-            FragmentType::Credit => "credit_fragments",
-            FragmentType::Movie => "movie_fragments",
-            FragmentType::Person => "person_fragments",
-            FragmentType::Programme => "programme_fragments",
-            FragmentType::Rights => "rights_fragments",
-            FragmentType::Season => "season_fragments",
-            FragmentType::Series => "series_fragments",
-            FragmentType::Sport => "sport_fragments",
-            FragmentType::Taxonomy => "taxonomy_fragments",
-            FragmentType::Title => "title_fragments"
-        }
+        todo!("step 1: match self and return the table name")
     }
 }
 
@@ -138,6 +116,15 @@ impl Fragment {
     ///
     /// TODO(step 2): build and return a `Fragment` from the given values,
     /// setting `status` to `FragmentStatus::Queued`.
+    ///
+    /// Java to port:
+    /// ```java
+    /// static Fragment of(String id, MessageType mt, FragmentType ft, long ts, String payload) {
+    ///     Fragment f = new Fragment(id, mt, ft, ts, payload);
+    ///     f.setStatus(FragmentStatus.QUEUED);   // always starts queued
+    ///     return f;
+    /// }
+    /// ```
     pub fn new(
         id: String,
         message_type: MessageType,
@@ -145,14 +132,31 @@ impl Fragment {
         message_ts: i64,
         fragment: String,
     ) -> Self {
-        Fragment {
-            id,
-            message_type,
-            fragment_type,
-            message_ts,
-            fragment,
-            status: FragmentStatus::Queued,
-        }
+        todo!("step 2: construct a Fragment with status = Queued")
+    }
+
+    /// Java/Spring: like `new` but the caller supplies the `status`. The consumer
+    /// uses this because the *dispatch outcome* (e.g. `Processed`,
+    /// `DownstreamError`) is what we persist, mirroring how a consumer stores the
+    /// dispatch result. `new` stays the "freshly queued" path used by the
+    /// REST `POST`.
+    ///
+    /// Java to port:
+    /// ```java
+    /// static Fragment of(String id, MessageType mt, FragmentType ft, long ts,
+    ///                    String payload, FragmentStatus status) {
+    ///     return new Fragment(id, mt, ft, ts, payload, status);  // caller-supplied status
+    /// }
+    /// ```
+    pub fn with_status(
+        id: String,
+        message_type: MessageType,
+        fragment_type: FragmentType,
+        message_ts: i64,
+        fragment: String,
+        status: FragmentStatus,
+    ) -> Self {
+        todo!("milestone A: construct a Fragment using the caller-provided status")
     }
 }
 

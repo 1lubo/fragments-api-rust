@@ -24,6 +24,12 @@ pub type SharedState = Arc<Mutex<FragmentRepository>>;
 /// repository and wraps it for sharing.
 ///
 /// TODO(step 4): create a `FragmentRepository` and wrap it in `Arc::new(Mutex::new(...))`.
+///
+/// Java to port (≈ the `@Bean` definition Spring would manage for you):
+/// ```java
+/// @Bean
+/// FragmentRepository fragmentRepository() { return new FragmentRepository(); }
+/// ```
 pub fn new_shared_state() -> SharedState {
-    Arc::new(Mutex::new(FragmentRepository::new()))
+    todo!("step 4: build Arc<Mutex<FragmentRepository>>")
 }
