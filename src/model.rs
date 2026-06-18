@@ -154,6 +154,29 @@ impl Fragment {
             status: FragmentStatus::Queued,
         }
     }
+
+    /// Java/Spring: like `new` but the caller supplies the `status`. The consumer
+    /// uses this because the *dispatch outcome* (e.g. `Processed`,
+    /// `DownstreamError`) is what we persist, mirroring how a consumer stores the
+    /// dispatch result. `new` stays the "freshly queued" path used by the
+    /// REST `POST`.
+    pub fn with_status(
+        id: String,
+        message_type: MessageType,
+        fragment_type: FragmentType,
+        message_ts: i64,
+        fragment: String,
+        status: FragmentStatus,
+    ) -> Self {
+        Fragment {
+            id,
+            message_type,
+            fragment_type,
+            message_ts,
+            fragment,
+            status,
+        }
+    }
 }
 
 /// Java/Spring: a request DTO (e.g. the `@RequestBody` of `POST /fragments`).

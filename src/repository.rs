@@ -69,3 +69,35 @@ impl FragmentRepository {
         self.fragments.is_empty()
     }
 }
+
+/// Java/Spring: the persistence *interface* the rest of the app codes against —
+/// the seam, like a Spring Data repository interface. Milestone A's only impl is
+/// the in-memory `FragmentRepository`; Milestone C adds a `sqlx`/Postgres impl
+/// behind this same trait, so the consumer/worker never changes.
+///
+/// The methods mirror the inherent ones above; this impl just forwards to them
+/// (Rust resolves the calls to the inherent methods, so there's no recursion).
+pub trait FragmentStore {
+    fn insert(&mut self, fragment: Fragment);
+    fn get(&self, id: &str) -> Option<Fragment>;
+    fn list(&self) -> Vec<Fragment>;
+    fn delete(&mut self, id: &str) -> bool;
+}
+
+impl FragmentStore for FragmentRepository {
+    fn insert(&mut self, fragment: Fragment) {
+        FragmentRepository::insert(self, fragment);
+    }
+
+    fn get(&self, id: &str) -> Option<Fragment> {
+        FragmentRepository::get(self, id)
+    }
+
+    fn list(&self) -> Vec<Fragment> {
+        FragmentRepository::list(self)
+    }
+
+    fn delete(&mut self, id: &str) -> bool {
+        FragmentRepository::delete(self, id)
+    }
+}
